@@ -35,9 +35,17 @@
 }
 
 .page-header .header-content strong {
-    font: 700 3.6rem Archivo;
-    line-height: 4.2rem;
+    font: 700 2.7rem Archivo;
+    line-height: 3.8rem;
     color: var(--color-title-in-primary);
+}
+
+.page-header .header-content p {
+    max-width: 30rem;
+    font-size: 1.3rem;
+    line-height: 2.6rem;
+    color: var(--color-text-in-primary);
+    margin-top: 1.6rem;
 }
 
 @media(min-width: 700px) {
@@ -50,7 +58,7 @@
 
     .page-header .header-content {
         flex: 1;
-        max-width: 740px;
+        max-width: 940px;
         margin: 0 auto;
         padding-bottom: 48px;
         display: flex;
@@ -60,6 +68,6 @@
     }
 
     .page-header .header-content strong {
-        max-width: 350px;
+        max-width: 500px;
     }
 }
