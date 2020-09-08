@@ -1,42 +1,99 @@
-import React from "react";
-import { View, Image, Text } from "react-native";
+import React, { useState } from "react";
+import { View, Image, Text, Linking } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import heartOutlineIcon from '../../assets/images/icons/heart-outline.png';
 import unfavoriteIcon from '../../assets/images/icons/unfavorite.png';
 import whatsappIcon from '../../assets/images/icons/whatsapp.png';
 
 import styles from './styles';
+import api from "../../services/api";
 
-function TeacherItem() {
+export interface Teacher {
+    id: number;
+    avatar: string;
+    bio: string;
+    cost: number;
+    name: string;
+    subject: string;
+    whatsapp: string;
+
+}
+
+interface TeacherItemProps {
+    teacher: Teacher;
+    favorited: boolean;
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, favorited }) => {
+
+    const [isfavorite, setIsFavorite] = useState(favorited);
+
+   
+
+    async function handleToggleFavorite() {
+
+        const favorites = await AsyncStorage.getItem('favorites');
+
+        let favoritesArray = [];
+
+        if (favorites) {
+            favoritesArray = JSON.parse(favorites);
+        }
+
+        if (isfavorite) {
+            const favoriteIndex = favoritesArray.findIndex((teacherItem: Teacher) => {
+                return teacherItem.id === teacher.id;
+            });
+            favoritesArray.splice(favoriteIndex, 1);
+            setIsFavorite(false);
+        } else {
+           
+            favoritesArray.push(teacher);
+
+            setIsFavorite(true);
+        }
+        await AsyncStorage.setItem("favorites", JSON.stringify(favoritesArray));
+    }
+
+    function handleLinkToWhatsapp() {
+        api.post('connections', {
+            user_id: teacher.id
+        });
+        
+        Linking.openURL(`whatsapp://send?phone=${teacher.whatsapp}`)
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.profile}>
-                <Image style={styles.avatar} source={{ uri: "https://github.com/LuizSerra.png" }} />
+                <Image style={styles.avatar} source={{ uri: teacher.avatar }} />
 
                 <View style={styles.profileInfo}>
-                    <Text style={styles.name}>Luiz Serra</Text>
-                    <Text style={styles.subject}>Compiladores</Text>
+                    <Text style={styles.name}>{teacher.name}</Text>
+                    <Text style={styles.subject}>{teacher.subject}</Text>
                 </View>
             </View>
-            <Text style={styles.bio}>Entusiasta de tecnologia {'\n'} 
-                Mudando o mundo um código de cada vez.
-             </Text>
+            <Text style={styles.bio}>{teacher.bio}</Text>
 
             <View style={styles.footer} >
                 <Text style={styles.price} >
-                    Preço/hora {'   '} 
-                    <Text style={styles.priceValue} >R$100,00</Text> 
+                    Preço/hora {'   '}
+                    <Text style={styles.priceValue} >R${teacher.cost}</Text>
                 </Text>
                 <View style={styles.buttonsContainer}>
-                    <RectButton style={[styles.favoriteButton, styles.favorited]} >
-                        <Image source={heartOutlineIcon} />
+                    <RectButton 
+                            onPress={handleToggleFavorite} 
+                            style={[styles.favoriteButton, isfavorite ? styles.favorited: {}]} >
+                        <Image source={isfavorite ? unfavoriteIcon : heartOutlineIcon} />
                     </RectButton>
-                    <RectButton style={styles.contactButton} >
+
+                    <RectButton onPress={handleLinkToWhatsapp} style={styles.contactButton} >
                         <Image source={whatsappIcon} />
                         <Text style={styles.contactButtonText} >Entrar em contato</Text>
                     </RectButton>
-                </View> 
+                </View>
             </View>
 
         </View>
