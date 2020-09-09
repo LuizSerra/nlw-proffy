@@ -31,6 +31,11 @@ O projeto consiste em uma plataforma que se propõe a conectar professores freel
 
 
 ### :game_die: Preview da aplicação
+            
+![Proffy Web](https://github.com/LuizSerra/nlw-proffy/blob/master/proffyWeb.gif)
+
+
+![splash](https://github.com/LuizSerra/nlw-proffy/blob/master/mobile-splash.png)    ![home](https://github.com/LuizSerra/nlw-proffy/blob/master/mobile-home.png)
 
 
 ## :key: Como rodar esse projeto.
